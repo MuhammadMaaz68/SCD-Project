@@ -8,8 +8,16 @@ use App\Http\Controllers\PageController;
 Route::get('/', [PageController::class, 'home'])->name('home');
 Route::get('/books', [PageController::class, 'books'])->name('books');
 Route::get('/books/{id}', [PageController::class, 'bookDetail'])->name('books.detail');
+Route::get('/cart', [PageController::class, 'cart'])->name('cart');
 Route::get('/checkout', [PageController::class, 'checkout'])->name('checkout');
+Route::get('/cart/add/{id}', [PageController::class, 'addToCart'])->name('cart.add');
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
+
+
+Route::get('/borrow-receipt', function () {
+    return view('borrow-receipt');
+})->name('borrow.receipt');
+
 
 // ==== Dashboards ====
 Route::view('/user', 'dashboards.user')->name('user.dashboard');

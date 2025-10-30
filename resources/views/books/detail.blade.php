@@ -17,6 +17,13 @@
 
   $id = request()->route('id');
   $book = $books[$id] ?? null;
+
+  // Dummy reviews for display
+  $reviews = [
+    ['name' => 'Sarah M.', 'rating' => 5, 'comment' => 'Absolutely loved this story. Couldn’t put it down!'],
+    ['name' => 'James R.', 'rating' => 4, 'comment' => 'Very well written, though the ending was a bit rushed.'],
+    ['name' => 'Hina P.', 'rating' => 5, 'comment' => 'Atmospheric and thrilling — a must-read.']
+  ];
 @endphp
 
 @if($book)
@@ -31,56 +38,100 @@
       <p class="lead">{{ $book['desc'] }}</p>
 
       <!-- Action Buttons -->
-      <div class="d-flex gap-2 mt-4">
+      <div class="d-flex gap-2 mt-4 mb-4">
         <button class="btn btn-outline-success"><i class="bi bi-bookmark-plus"></i> Add to List</button>
 
-        <!-- Borrow Button links to checkout -->
+        <a href="#" class="btn btn-outline-primary" onclick="addToCart({{ $id }})">
+          <i class="bi bi-cart-plus"></i> Add to Cart
+        </a>
+
         <a href="{{ route('checkout') }}?books={{ $id }}" class="btn btn-outline-warning">
           <i class="bi bi-bag-plus"></i> Borrow
         </a>
+      </div>
 
-        <button class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#reviewModal">
-          <i class="bi bi-chat-dots"></i> Add Review
-        </button>
+      <!-- Review Section -->
+      <div class="p-3 rounded" style="border: 2px solid #222; background-color: rgba(255,255,255,0.02);">
+        <h5 class="fw-bold text-light mb-3">Reviews</h5>
+
+        <div id="reviewsList">
+          @foreach($reviews as $r)
+          <div class="mb-3 p-3 rounded" style="background-color: rgba(255,255,255,0.05); border-left: 3px solid #2563eb;">
+            <div class="d-flex justify-content-between">
+              <strong>{{ $r['name'] }}</strong>
+              <span class="text-warning">
+                @for($i=0; $i < $r['rating']; $i++)
+                  ★
+                @endfor
+              </span>
+            </div>
+            <p class="mb-0 text-light">{{ $r['comment'] }}</p>
+          </div>
+          @endforeach
+        </div>
+
+        <!-- Add Review -->
+        <form id="reviewForm" class="mt-4">
+          <div class="mb-2">
+            <label>Your Name</label><br>
+            <input type="text" id="reviewerName" class="form-control bg-dark text-light border-0" placeholder="Your name" required>
+          </div>
+          <div class="mb-2">
+            <label>Your Rating</label><br>
+            <select id="reviewRating" class="form-select bg-dark text-light border-0" required>
+              <option value="">Rating</option>
+              <option value="5">★★★★★</option>
+              <option value="4">★★★★☆</option>
+              <option value="3">★★★☆☆</option>
+              <option value="2">★★☆☆☆</option>
+              <option value="1">★☆☆☆☆</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label>Your Review</label><br>
+            <textarea id="reviewText" class="form-control bg-dark text-light border-0" rows="3" placeholder="Write your review..." required></textarea>
+          </div>
+          <button class="btn btn-primary btn-sm"><i class="bi bi-send"></i> Submit Review</button>
+        </form>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Review Modal -->
-<div class="modal fade" id="reviewModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header bg-dark text-white">
-        <h5 class="modal-title">Add Your Review</h5>
-        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <textarea class="form-control" rows="4" placeholder="Write your review here..."></textarea>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button class="btn btn-primary">Submit Review</button>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- Scripts -->
+<script>
+function addToCart(id) {
+  let cart = JSON.parse(localStorage.getItem('cartBooks') || '[]');
+  if (!cart.includes(id)) cart.push(id);
+  localStorage.setItem('cartBooks', JSON.stringify(cart));
+  alert('✅ Book added to cart!');
+}
 
-<!-- Gradient Button Styling -->
-<style>
-.btn-gradient {
-  background: linear-gradient(90deg, #1e3a8a 0%, #2563eb 50%, #4f46e5 100%);
-  border: none;
-  transition: 0.3s;
-}
-.btn-gradient:hover {
-  opacity: 0.9;
-  transform: translateY(-2px);
-}
-</style>
-@else
-<div class="text-center py-5">
-  <h3 class="text-danger">Book not found.</h3>
-</div>
+// Review Submission (frontend only)
+document.getElementById('reviewForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const name = document.getElementById('reviewerName').value.trim();
+  const rating = document.getElementById('reviewRating').value;
+  const text = document.getElementById('reviewText').value.trim();
+
+  if (!name || !rating || !text) return alert('Please fill all fields.');
+
+  const reviewDiv = document.createElement('div');
+  reviewDiv.className = "mb-3 p-3 rounded animate__animated animate__fadeInUp";
+  reviewDiv.style.backgroundColor = "rgba(255,255,255,0.05)";
+  reviewDiv.style.borderLeft = "3px solid #2563eb";
+  reviewDiv.innerHTML = `
+    <div class="d-flex justify-content-between">
+      <strong>${name}</strong>
+      <span class="text-warning">${'★'.repeat(rating)}</span>
+    </div>
+    <p class="mb-0 text-light">${text}</p>
+  `;
+  document.getElementById('reviewsList').prepend(reviewDiv);
+
+  this.reset();
+  alert('⭐ Thank you! Your review has been added.');
+});
+</script>
 @endif
 @endsection
