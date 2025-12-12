@@ -26,7 +26,7 @@ class UpdateBookRequest extends FormRequest
             'author' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'description' => 'required|string',
-            'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'published_year' => 'nullable|integer|digits:4',
             'quantity' => 'required|integer|min:0',
         ];

@@ -38,7 +38,16 @@ class BorrowController extends Controller
             $borrow->update(['status' => $request->status]);
         }
 
-        return redirect()->back()->with('success', 'Borrow status updated.');
+        $message = 'Borrow status updated.';
+        if ($request->status === 'approved') {
+            $message = 'Borrow request approved successfully.';
+        } elseif ($request->status === 'rejected') {
+            $message = 'Borrow request rejected.';
+        } elseif ($request->status === 'returned') {
+            $message = 'Book marked as returned.';
+        }
+
+        return redirect()->back()->with('success', $message);
     }
 
     public function returnBook($id)

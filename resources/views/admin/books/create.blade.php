@@ -60,6 +60,9 @@
                         <label for="cover_image" class="form-label">Cover Image</label>
                         <input type="file" class="form-control @error('cover_image') is-invalid @enderror" id="cover_image" name="cover_image" required accept="image/*">
                         @error('cover_image') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        <div class="mt-3">
+                            <img id="preview-image" style="width:120px; height:120px; display:none; border-radius:6px; object-fit: cover; border: 1px solid #555;">
+                        </div>
                     </div>
 
                     <div class="d-grid">
@@ -70,4 +73,5 @@
         </div>
     </div>
 </div>
+<script src="{{ asset('js/image-upload.js') }}"></script>
 @endsection

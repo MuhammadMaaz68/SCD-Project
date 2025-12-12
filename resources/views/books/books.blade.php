@@ -33,6 +33,7 @@
         <div class="col">
             <div class="card h-100 shadow-sm border-0 transition-hover">
                 <div class="position-relative">
+                    <a href="{{ route('books.detail', $book) }}" class="text-decoration-none">
                     @if($book->cover_image)
                         <img src="{{ Storage::url($book->cover_image) }}" class="card-img-top" alt="{{ $book->title }}" style="height: 300px; object-fit: cover;">
                     @else
@@ -40,19 +41,29 @@
                             <span>No Image</span>
                         </div>
                     @endif
+                    </a>
                     <div class="position-absolute top-0 end-0 p-2">
                         <input type="checkbox" class="form-check-input book-checkbox" value="{{ $book->id }}" style="width: 1.5em; height: 1.5em;">
                     </div>
                 </div>
                 <div class="card-body">
-                    <h5 class="card-title fw-bold text-truncate">{{ $book->title }}</h5>
+                    <a href="{{ route('books.detail', $book) }}" class="text-decoration-none text-dark">
+                        <h5 class="card-title fw-bold text-truncate">{{ $book->title }}</h5>
+                    </a>
                     <p class="card-text text-muted small mb-2">{{ $book->author }}</p>
                     <p class="card-text text-secondary line-clamp-2">{{ Str::limit($book->description, 80) }}</p>
                 </div>
                 <div class="card-footer bg-white border-0 pt-0">
                     <div class="d-flex justify-content-between align-items-center">
-                        <span class="badge bg-light text-dark border">{{ $book->category->name ?? 'Uncategorized' }}</span>
-                        <a href="{{ route('books.detail', $book->id) }}" class="btn btn-outline-primary btn-sm rounded-pill px-3">View Details</a>
+                        <small class="text-warning">
+                            <i class="bi bi-star-fill"></i> 4.5
+                        </small>
+                        <form action="{{ route('cart.add', $book->id) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-cart-plus"></i> Add
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -79,7 +90,7 @@
         }
 
         localStorage.setItem('cartBooks', JSON.stringify(selectedBooks));
-        window.location.href = "{{ route('cart') }}"; // Or show checkout alert
+        window.location.href = "{{ route('cart.index') }}"; // Or show checkout alert
     });
 
     // --- Bulk Action Logic (AJAX) ---

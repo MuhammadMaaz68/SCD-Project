@@ -21,6 +21,24 @@ class AdminController extends Controller
         $categories = \App\Models\Category::all();
         $allBorrows = \App\Models\Borrow::with(['user', 'book'])->latest()->get();
 
-        return view('admin.dashboard', compact('totalBooks', 'totalUsers', 'activeBorrows', 'pendingRequests', 'books', 'categories', 'allBorrows'));
+        return view('admin.dashboard', compact('totalBooks', 'totalUsers', 'activeBorrows', 'pendingRequests'));
+    }
+
+    public function users()
+    {
+        $users = \App\Models\User::where('role', 'user')->latest()->get();
+        return view('admin.users.index', compact('users'));
+    }
+
+    public function borrows(Request $request)
+    {
+        $query = \App\Models\Borrow::with(['user', 'book'])->latest();
+
+        if ($request->has('status') && $request->status != '') {
+            $query->where('status', $request->status);
+        }
+
+        $borrows = $query->paginate(10);
+        return view('admin.borrows.index', compact('borrows'));
     }
 }

@@ -32,9 +32,14 @@
             </label>
         </div>
 
-        <div class="flex items-center justify-end mt-4">
+        <div class="mb-3">
+            {!! NoCaptcha::display() !!}
+            <x-input-error :messages="$errors->get('g-recaptcha-response')" class="mt-2" />
+        </div>
+
+        <div class="flex items-center justify-between mt-4">
             @if (Route::has('password.request'))
-                <a class="text-decoration-none text-dark small" href="{{ route('password.request') }}">
+                <a class="text-decoration-none text-dark small me-auto" href="{{ route('password.request') }}">
                     {{ __('Forgot your password?') }}
                 </a>
             @endif
@@ -43,5 +48,14 @@
                 {{ __('Log in') }}
             </x-primary-button>
         </div>
+
+        <hr class="my-4">
+        
+        <div class="text-center">
+            <a href="{{ route('auth.google.redirect') }}" class="btn btn-danger w-100">
+                <i class="fab fa-google me-2"></i> Login with Google
+            </a>
+        </div>
     </form>
+    {!! NoCaptcha::renderJs() !!}
 </x-guest-layout>

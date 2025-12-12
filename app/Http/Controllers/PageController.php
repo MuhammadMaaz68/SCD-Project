@@ -23,6 +23,7 @@ class PageController extends Controller
     // Book detail page
     public function bookDetail(\App\Models\Book $book)
     {
+        $book->load(['reviews.user', 'category']);
         return view('books.detail', compact('book'));
     }
 
@@ -32,19 +33,9 @@ class PageController extends Controller
         return view('checkout');
     }
 
-    // Contact page
     public function contact()
     {
         return view('contact');
     }
-
-    public function cart() {
-    return view('cart');
 }
 
-public function addToCart($id) {
-    // for now, redirect to cart with success message
-    return redirect()->route('cart')->with('success', 'Book added to cart!');
-}
-
-}

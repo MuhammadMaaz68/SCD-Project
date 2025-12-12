@@ -9,6 +9,7 @@
         <div class="col-md-3 mb-4">
             <div class="list-group shadow-sm">
                 <a href="{{ route('user.dashboard') }}" class="list-group-item list-group-item-action {{ request()->routeIs('user.dashboard') ? 'active' : '' }}">My Books</a>
+                <a href="{{ route('cart.index') }}" class="list-group-item list-group-item-action {{ request()->routeIs('cart.index') ? 'active' : '' }}">My Cart</a>
                 <a href="{{ route('wishlist.index') }}" class="list-group-item list-group-item-action {{ request()->routeIs('wishlist.index') ? 'active' : '' }}">Wishlist</a>
                 <a href="{{ route('profile.edit') }}" class="list-group-item list-group-item-action">Profile Settings</a>
             </div>

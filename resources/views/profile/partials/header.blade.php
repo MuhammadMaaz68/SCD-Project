@@ -11,6 +11,11 @@
       </button>
 
       <div class="collapse navbar-collapse" id="navbarNav">
+        <!-- Search Bar -->
+        <div class="mx-auto position-relative d-none d-lg-block" style="width: 400px;">
+            <input type="text" id="search-input" class="form-control" placeholder="Search by name or category..." autocomplete="off">
+            <div id="search-results" class="dropdown-menu w-100 mt-1 shadow border-0" style="display: none; max-height: 400px; overflow-y: auto; z-index: 1050;"></div>
+        </div>
         <ul class="navbar-nav ms-auto">
           <li class="nav-item"><a class="nav-link" href="{{ route('home') }}">Home</a></li>
           <li class="nav-item"><a class="nav-link" href="{{ route('books.list') }}">Books</a></li>
@@ -49,11 +54,17 @@
             @csrf
           <div class="mb-3">
             <label class="form-label fw-semibold text-dark">Email address</label>
-            <input type="email" name="email" class="form-control text-dark" placeholder="Enter your email" required>
+            <input type="email" name="email" class="form-control text-dark @error('email', 'login') is-invalid @enderror" placeholder="Enter your email" value="{{ old('email') }}" required>
+            @error('email', 'login')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
           </div>
           <div class="mb-3">
             <label class="form-label fw-semibold text-dark">Password</label>
-            <input type="password" name="password" class="form-control text-dark" placeholder="Enter your password" required>
+            <input type="password" name="password" class="form-control text-dark @error('password', 'login') is-invalid @enderror" placeholder="Enter your password" required>
+            @error('password', 'login')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
           </div>
           <hr>
           <div class="text-center mt-3">
@@ -75,6 +86,9 @@
           </div>
           <div class="mb-3 text-center">
                 {!! NoCaptcha::display() !!}
+                @error('g-recaptcha-response', 'login')
+                    <div class="text-danger small mt-1">{{ $message }}</div>
+                @enderror
             </div>
           <button type="submit" class="btn btn-primary w-100">Login</button>
         </form>
@@ -97,15 +111,24 @@
             @csrf
           <div class="mb-3">
             <label class="form-label fw-semibold text-dark">Full Name</label>
-            <input type="text" name="name" class="form-control text-dark" placeholder="Enter your name" required>
+            <input type="text" name="name" class="form-control text-dark @error('name', 'register') is-invalid @enderror" placeholder="Enter your name" value="{{ old('name') }}" required>
+            @error('name', 'register')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
           </div>
           <div class="mb-3">
             <label class="form-label fw-semibold text-dark">Email</label>
-            <input type="email" name="email" class="form-control text-dark" placeholder="Enter your email" required>
+            <input type="email" name="email" class="form-control text-dark @error('email', 'register') is-invalid @enderror" placeholder="Enter your email" value="{{ old('email') }}" required>
+            @error('email', 'register')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
           </div>
           <div class="mb-3">
             <label class="form-label fw-semibold text-dark">Password</label>
-            <input type="password" name="password" class="form-control text-dark" placeholder="Create a password" required>
+            <input type="password" name="password" class="form-control text-dark @error('password', 'register') is-invalid @enderror" placeholder="Create a password" required>
+            @error('password', 'register')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
           </div>
           <div class="mb-3">
             <label class="form-label fw-semibold text-dark">Confirm Password</label>
@@ -113,6 +136,9 @@
           </div>
           <div class="mb-3 text-center">
                 {!! NoCaptcha::display() !!}
+                @error('g-recaptcha-response', 'register')
+                    <div class="text-danger small mt-1">{{ $message }}</div>
+                @enderror
             </div>
           <button type="submit" class="btn btn-success w-100">Register</button>
         </form>
@@ -121,3 +147,35 @@
     </div>
   </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Correctly handle Named Error Bags
+        @if ($errors->login->any())
+            const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+            loginModal.show();
+        @elseif ($errors->register->any())
+            const registerModal = new bootstrap.Modal(document.getElementById('registerModal'));
+            registerModal.show();
+        @endif
+
+        const modals = ['loginModal', 'registerModal'];
+        modals.forEach(id => {
+            const modalEl = document.getElementById(id);
+            if (modalEl) {
+                modalEl.addEventListener('hidden.bs.modal', function () {
+                    const form = modalEl.querySelector('form');
+                    
+                    // Remove error styling and messages
+                    modalEl.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+                    modalEl.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
+                    modalEl.querySelectorAll('.text-danger').forEach(el => el.remove()); 
+                    
+                    // Clear inputs
+                    form.querySelectorAll('input:not([type=hidden]):not([type=submit])').forEach(input => input.value = '');
+                    if(document.getElementById('rememberMe')) document.getElementById('rememberMe').checked = false;
+                });
+            }
+        });
+    });
+</script>

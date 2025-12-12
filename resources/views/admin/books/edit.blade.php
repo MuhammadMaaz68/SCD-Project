@@ -60,13 +60,11 @@
                     <div class="mb-3">
                         <label for="cover_image" class="form-label">Cover Image (Leave empty to keep current)</label>
                         <input type="file" class="form-control @error('cover_image') is-invalid @enderror" id="cover_image" name="cover_image" accept="image/*">
-                        @if($book->cover_image)
-                            <div class="mt-2">
-                                <small>Current: </small>
-                                <img src="{{ Storage::url($book->cover_image) }}" alt="Current Cover" height="50">
-                            </div>
-                        @endif
                         @error('cover_image') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        <div class="mt-3">
+                            <img id="preview-image" src="{{ $book->cover_image ? Storage::url($book->cover_image) : '' }}" 
+                                 style="width:120px; height:120px; {{ $book->cover_image ? 'display:block;' : 'display:none;' }} border-radius:6px; object-fit: cover; border: 1px solid #555;">
+                        </div>
                     </div>
 
                     <div class="d-grid">
@@ -77,4 +75,5 @@
         </div>
     </div>
 </div>
+<script src="{{ asset('js/image-upload.js') }}"></script>
 @endsection
