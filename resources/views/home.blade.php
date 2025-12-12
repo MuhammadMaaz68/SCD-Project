@@ -7,7 +7,7 @@
   <div class="container">
     <h1 class="display-4 fw-bold mb-3">Welcome to <span class="text-warning">BookVerse</span></h1>
     <p class="lead mb-4">Discover, Borrow, and Review your favorite books — all in one place.</p>
-    <a href="{{ route('books') }}" class="btn btn-warning btn-lg px-4">Explore Books</a>
+    <a href="{{ route('books.list') }}" class="btn btn-warning btn-lg px-4">Explore Books</a>
   </div>
 </section>
 
@@ -17,22 +17,20 @@
     <h2 class="text-center mb-5 fw-bold text-primary">Featured Books</h2>
 
     <div class="row g-4 justify-content-center">
-      @php
-        $books = [
-          ['id'=>1,'title'=>'The Silent Library','author'=>'John Cross','image'=>'book1.jpg'],
-          ['id'=>2,'title'=>'Echoes of Eternity','author'=>'Sophie Lane','image'=>'book2.jpg'],
-          ['id'=>3,'title'=>'Digital Shadows','author'=>'Mark Doyle','image'=>'book3.jpg'],
-        ];
-      @endphp
-
       @foreach($books as $book)
       <div class="col-md-4">
         <div class="card h-100 shadow-sm border-0 hover-shadow">
-          <img src="{{ asset('images/books/'.$book['image']) }}" class="card-img-top" alt="{{ $book['title'] }}">
+          @if($book->cover_image)
+            <img src="{{ Storage::url($book->cover_image) }}" class="card-img-top" alt="{{ $book->title }}" style="height: 300px; object-fit: cover;">
+          @else
+            <div class="d-flex align-items-center justify-content-center bg-secondary text-white" style="height: 300px;">
+                <span>No Image</span>
+            </div>
+          @endif
           <div class="card-body text-center">
-            <h5 class="card-title fw-semibold">{{ $book['title'] }}</h5>
-            <p class="text-muted small mb-2">by {{ $book['author'] }}</p>
-            <a href="{{ route('books.detail', $book['id']) }}" class="btn btn-outline-primary btn-sm w-100">
+            <h5 class="card-title fw-semibold">{{ $book->title }}</h5>
+            <p class="text-muted small mb-2">by {{ $book->author }}</p>
+            <a href="{{ route('books.detail', $book) }}" class="btn btn-outline-primary btn-sm w-100">
               View Details
             </a>
           </div>
@@ -42,7 +40,7 @@
     </div>
 
     <div class="text-center mt-5">
-      <a href="{{ route('books') }}" class="btn btn-primary px-4">View All Books</a>
+      <a href="{{ route('books.list') }}" class="btn btn-primary px-4">View All Books</a>
     </div>
   </div>
 </section>

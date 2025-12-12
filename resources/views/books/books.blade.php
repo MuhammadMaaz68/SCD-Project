@@ -1,109 +1,134 @@
 @extends('layouts.app')
 
 @section('content')
-@php
-  $books = [
-    1 => ['title'=>'The Silent Library','author'=>'John Cross','image'=>'book1.jpg'],
-    2 => ['title'=>'Echoes of Eternity','author'=>'Sophie Lane','image'=>'book2.jpg'],
-    3 => ['title'=>'Digital Shadows','author'=>'Mark Doyle','image'=>'book3.jpg'],
-    4 => ['title'=>'The Midnight Archive','author'=>'Liam Parker','image'=>'book4.jpg'],
-    5 => ['title'=>'Forgotten Pages','author'=>'David Herrera','image'=>'book5.jpg'],
-    6 => ['title'=>'Chronicles of Dawn','author'=>'Noah Smith','image'=>'book6.jpg'],
-    7 => ['title'=>'Finder Seeker','author'=>'Ella West','image'=>'book7.jpg'],
-    8 => ['title'=>'The Last Rainforest','author'=>'Eliot Schrefer','image'=>'book8.jpg'],
-    9 => ['title'=>'Dreamscape','author'=>'Isabella Moore','image'=>'book9.jpg'],
-    10 => ['title'=>'Code of Silence','author'=>'Mason Hunt','image'=>'book10.jpg']
-  ];
-@endphp
-
 <div class="container py-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="fw-bold text-primary">Available Books</h2>
-    <div class="d-flex gap-2">
-      <button id="borrowSelected" class="btn btn-warning">
-        <i class="bi bi-bag-plus"></i> Borrow Selected
-      </button>
-      <button id="addToCart" class="btn btn-outline-primary">
-        <i class="bi bi-cart-plus"></i> Add to Cart
-      </button>
-      <button class="btn btn-outline-success">
-        <i class="bi bi-bookmark-plus"></i> Add to List
-      </button>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Explore Our Collection</h2>
     </div>
-  </div>
 
-  <div class="row">
-    @foreach ($books as $id => $book)
-      <div class="col-md-3 mb-4">
-        <div class="card h-100 shadow-sm border-0 position-relative book-card">
-          <!-- Checkbox for selection -->
-          <input type="checkbox" class="book-checkbox form-check-input position-absolute top-0 end-0 m-2" value="{{ $id }}" style="transform: scale(1.3); z-index: 10;">
-
-          <!-- Clickable image -->
-          <a href="{{ route('books.detail', $id) }}">
-            <img src="{{ asset('images/books/'.$book['image']) }}" class="card-img-top" alt="{{ $book['title'] }}">
-          </a>
-
-          <div class="card-body text-center">
-            <h5 class="fw-bold">{{ $book['title'] }}</h5>
-            <p class="text-muted small">by {{ $book['author'] }}</p>
-            <div class="d-flex justify-content-center gap-2 mt-3">
-              <a href="{{ route('books.detail', $id) }}" class="btn btn-sm btn-outline-info">
-                <i class="bi bi-eye"></i> View Details
-              </a>
-            </div>
-          </div>
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-      </div>
-    @endforeach
-  </div>
+    @endif
+
+    <div class="d-flex gap-2 mb-3">
+        <button type="button" class="btn btn-primary" onclick="submitBulkAction('{{ route('borrows.store') }}')">
+            <i class="bi bi-book"></i> Borrow Selected
+        </button>
+        <button type="button" class="btn btn-success" id="addToCart">
+            <i class="bi bi-cart-plus"></i> Add to Cart
+        </button>
+        <button type="button" class="btn btn-outline-danger" onclick="submitBulkAction('{{ route('wishlist.store') }}')">
+            <i class="bi bi-heart"></i> Add to Wishlist
+        </button>
+    </div>
+
+    @csrf <!-- Token for JS -->
+    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+        @forelse($books as $book)
+        <div class="col">
+            <div class="card h-100 shadow-sm border-0 transition-hover">
+                <div class="position-relative">
+                    @if($book->cover_image)
+                        <img src="{{ Storage::url($book->cover_image) }}" class="card-img-top" alt="{{ $book->title }}" style="height: 300px; object-fit: cover;">
+                    @else
+                        <div class="d-flex align-items-center justify-content-center bg-secondary text-white card-img-top" style="height: 300px;">
+                            <span>No Image</span>
+                        </div>
+                    @endif
+                    <div class="position-absolute top-0 end-0 p-2">
+                        <input type="checkbox" class="form-check-input book-checkbox" value="{{ $book->id }}" style="width: 1.5em; height: 1.5em;">
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title fw-bold text-truncate">{{ $book->title }}</h5>
+                    <p class="card-text text-muted small mb-2">{{ $book->author }}</p>
+                    <p class="card-text text-secondary line-clamp-2">{{ Str::limit($book->description, 80) }}</p>
+                </div>
+                <div class="card-footer bg-white border-0 pt-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge bg-light text-dark border">{{ $book->category->name ?? 'Uncategorized' }}</span>
+                        <a href="{{ route('books.detail', $book->id) }}" class="btn btn-outline-primary btn-sm rounded-pill px-3">View Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @empty
+        <div class="col-12 py-5 text-center">
+            <p class="text-muted display-6">No books available at the moment.</p>
+        </div>
+        @endforelse
+    </div>
+
+    <div class="mt-5 d-flex justify-content-center">
+        {{ $books->links() }}
+    </div>
 </div>
 
 <script>
-  // --- Load saved cart from localStorage ---
-  const savedCart = JSON.parse(localStorage.getItem('cartBooks') || '[]');
+    // --- Cart Logic (LocalStorage) ---
+    document.getElementById('addToCart').addEventListener('click', function() {
+        const selectedBooks = Array.from(document.querySelectorAll('.book-checkbox:checked')).map(cb => parseInt(cb.value));
+        if (selectedBooks.length === 0) {
+          alert('Please select at least one book to add to cart.');
+          return;
+        }
 
-  // Pre-check any saved books
-  document.querySelectorAll('.book-checkbox').forEach(cb => {
-    if (savedCart.includes(parseInt(cb.value))) cb.checked = true;
-  });
+        localStorage.setItem('cartBooks', JSON.stringify(selectedBooks));
+        window.location.href = "{{ route('cart') }}"; // Or show checkout alert
+    });
 
-  // --- Add to Cart button ---
-  document.getElementById('addToCart').addEventListener('click', function() {
-    const selectedBooks = Array.from(document.querySelectorAll('.book-checkbox:checked')).map(cb => parseInt(cb.value));
-    if (selectedBooks.length === 0) {
-      alert('Please select at least one book to add to cart.');
-      return;
+    // --- Bulk Action Logic (AJAX) ---
+    function submitBulkAction(url) {
+        const checkboxes = document.querySelectorAll('.book-checkbox:checked');
+        if (checkboxes.length === 0) {
+            alert('Please select at least one book.');
+            return;
+        }
+
+        const csrfToken = document.querySelector('input[name="_token"]').value;
+        const promises = [];
+
+        checkboxes.forEach(checkbox => {
+            const formData = new FormData();
+            formData.append('_token', csrfToken);
+            formData.append('book_id', checkbox.value);
+
+            promises.push(
+                fetch(url, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
+                })
+            );
+        });
+
+        Promise.all(promises)
+            .then(responses => {
+                // Determine success based on responses if needed, or simply reload
+                window.location.reload(); 
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while processing bulk action.');
+            });
     }
-
-    localStorage.setItem('cartBooks', JSON.stringify(selectedBooks));
-    window.location.href = "{{ route('cart') }}";
-  });
-
-  // --- Borrow Selected button ---
-  document.getElementById('borrowSelected').addEventListener('click', function() {
-    const selectedBooks = Array.from(document.querySelectorAll('.book-checkbox:checked')).map(cb => parseInt(cb.value));
-    if (selectedBooks.length === 0) {
-      alert('Please select at least one book to borrow.');
-      return;
-    }
-    localStorage.setItem('cartBooks', JSON.stringify(selectedBooks));
-    window.location.href = "{{ route('checkout') }}";
-  });
 </script>
 
 <style>
-.book-card {
+.transition-hover {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.book-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-}
-.card-img-top {
-  cursor: pointer;
-  height: 280px;
-  object-fit: cover;
+.transition-hover:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
 }
 </style>
 @endsection

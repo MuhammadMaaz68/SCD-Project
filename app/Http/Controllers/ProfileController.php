@@ -57,4 +57,9 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    // public function admin()
+    // {
+    //     return view('dashboards.admin.books.index');
+    // }
 }

@@ -9,19 +9,21 @@ class PageController extends Controller
     // Home page
     public function home()
     {
-        return view('home');
+        $books = \App\Models\Book::latest()->take(3)->get();
+        return view('home', compact('books'));
     }
 
     // Books page
     public function books()
     {
-        return view('books.books');
+        $books = \App\Models\Book::with('category')->latest()->paginate(12);
+        return view('books.books', compact('books'));
     }
 
     // Book detail page
-    public function bookDetail($id)
+    public function bookDetail(\App\Models\Book $book)
     {
-        return view('books.detail');
+        return view('books.detail', compact('book'));
     }
 
     // Checkout page
