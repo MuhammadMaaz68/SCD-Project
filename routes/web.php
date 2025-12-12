@@ -24,6 +24,7 @@ Route::post('/cart/checkout', [App\Http\Controllers\CartController::class, 'chec
 
 Route::get('/checkout', [PageController::class, 'checkout'])->name('checkout');
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
+Route::post('/contact', [PageController::class, 'submitContact'])->name('contact.submit');
 Route::get('/search', [\App\Http\Controllers\SearchController::class, 'search'])->name('search');
 
 // ==== Admin Routes (Authenticated) ====

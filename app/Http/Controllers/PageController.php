@@ -37,5 +37,16 @@ class PageController extends Controller
     {
         return view('contact');
     }
+
+    public function submitContact(Request $request)
+    {
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email',
+            'message' => 'required',
+        ]);
+
+        return back()->with('success', 'Thank you for your message! We will get back to you soon.');
+    }
 }
 

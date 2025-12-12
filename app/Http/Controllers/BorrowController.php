@@ -29,12 +29,23 @@ class BorrowController extends Controller
 
     public function updateStatus(\Illuminate\Http\Request $request, $id)
     {
-        $borrow = \App\Models\Borrow::findOrFail($id);
+        $borrow = \App\Models\Borrow::with('book')->findOrFail($id);
+        $previousStatus = $borrow->status;
         
         if ($request->status === 'returned') {
             $borrow->update(['status' => 'returned', 'returned_at' => now()]);
-            // Logic to increase book quantity could go here
+            
+            if ($previousStatus === 'approved') {
+                $borrow->book->increment('quantity');
+            }
         } else {
+            if ($request->status === 'approved' && $previousStatus !== 'approved') {
+                if ($borrow->book->quantity < 1) {
+                    return redirect()->back()->with('error', 'Cannot approve request. Book is out of stock.');
+                }
+                $borrow->book->decrement('quantity');
+            }
+            
             $borrow->update(['status' => $request->status]);
         }
 
@@ -59,7 +70,7 @@ class BorrowController extends Controller
         }
 
         $borrow->update(['status' => 'returned', 'returned_at' => now()]);
-        // Ideally, we'd also increment the book quantity here.
+        $borrow->book->increment('quantity');
 
         return redirect()->back()->with('success', 'Book returned successfully.');
     }

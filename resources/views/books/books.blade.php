@@ -17,9 +17,6 @@
         <button type="button" class="btn btn-primary" onclick="submitBulkAction('{{ route('borrows.store') }}')">
             <i class="bi bi-book"></i> Borrow Selected
         </button>
-        <button type="button" class="btn btn-success" id="addToCart">
-            <i class="bi bi-cart-plus"></i> Add to Cart
-        </button>
         <button type="button" class="btn btn-outline-danger" onclick="submitBulkAction('{{ route('wishlist.store') }}')">
             <i class="bi bi-heart"></i> Add to Wishlist
         </button>

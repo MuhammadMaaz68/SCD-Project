@@ -15,7 +15,7 @@
             <div class="col-md-8">
                 <div class="card shadow-sm border-0 rounded-4">
                     <div class="card-body p-4">
-                        <form action="#" method="POST">
+                        <form action="{{ route('contact.submit') }}" method="POST">
                             @csrf
                             <div class="mb-3">
                                 <label for="name" class="form-label fw-semibold">Full Name</label>
