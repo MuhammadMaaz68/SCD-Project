@@ -1,3 +1,11 @@
+{{-- 
+    Partial: Header/Navbar
+    Description: Global navigation bar with search and auth modals.
+    Includes:
+    - Navigation links
+    - Search bar
+    - Login/Register Modals
+--}}
 <header>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
     <div class="container">
@@ -18,7 +26,10 @@
         </div>
         <ul class="navbar-nav ms-auto">
           <li class="nav-item"><a class="nav-link" href="{{ route('home') }}">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ route('books.list') }}">Books</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ route('books.list') }}">Library</a></li>
+          @auth
+            <li class="nav-item"><a class="nav-link" href="{{ route('orders.index') }}">My Orders</a></li>
+          @endauth
           <li class="nav-item"><a class="nav-link" href="{{ route('contact') }}">Contact</a></li>
         </ul>
 
@@ -59,7 +70,12 @@
           </div>
           <div class="mb-3">
             <label class="form-label fw-semibold text-dark">Password</label>
-            <input type="password" name="password" class="form-control text-dark @error('password', 'login') is-invalid @enderror" placeholder="Enter your password" required>
+            <div class="input-group">
+                <input type="password" id="loginModalPassword" name="password" class="form-control text-dark @error('password', 'login') is-invalid @enderror" placeholder="Enter your password" required>
+                <button class="btn btn-outline-secondary" type="button" id="toggleLoginModalPassword">
+                    <i class="bi bi-eye"></i>
+                </button>
+            </div>
             @error('password', 'login')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
@@ -123,7 +139,12 @@
           </div>
           <div class="mb-3">
             <label class="form-label fw-semibold text-dark">Password</label>
-            <input type="password" name="password" class="form-control text-dark @error('password', 'register') is-invalid @enderror" placeholder="Create a password" required>
+            <div class="input-group">
+                <input type="password" id="registerModalPassword" name="password" class="form-control text-dark @error('password', 'register') is-invalid @enderror" placeholder="Create a password" required>
+                <button class="btn btn-outline-secondary" type="button" id="toggleRegisterModalPassword">
+                    <i class="bi bi-eye"></i>
+                </button>
+            </div>
             @error('password', 'register')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
@@ -175,5 +196,31 @@
                 });
             }
         });
+    });
+
+    // Toggle Password for Modals
+    function setupModalPasswordToggle(inputId, buttonId) {
+        const button = document.getElementById(buttonId);
+        const input = document.getElementById(inputId);
+        
+        if(button && input) {
+            button.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('bi-eye');
+                    icon.classList.add('bi-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('bi-eye-slash');
+                    icon.classList.add('bi-eye');
+                }
+            });
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        setupModalPasswordToggle('loginModalPassword', 'toggleLoginModalPassword');
+        setupModalPasswordToggle('registerModalPassword', 'toggleRegisterModalPassword');
     });
 </script>

@@ -1,3 +1,12 @@
+<!-- {{-- 
+    Layout: App Layout
+    Description: The main layout wrapper for authenticated users. 
+    Includes:
+    - Bootstrap 5 integration
+    - Navigation bar
+    - Flash message handling
+    - Footer
+--}} -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -49,6 +58,27 @@
             text-align: center;
             padding: 20px 0;
             border-top: 1px solid #222;
+        }
+        
+        /* Pagination Override */
+        .page-link {
+            background-color: #1a1a40;
+            border-color: #444;
+            color: #fff;
+        }
+        .page-link:hover {
+            background-color: #3a0ca3;
+            border-color: #444;
+            color: #fff;
+        }
+        .page-item.active .page-link {
+            background-color: #7209b7;
+            border-color: #7209b7;
+        }
+        .page-item.disabled .page-link {
+            background-color: #0d0d1a;
+            border-color: #444;
+            color: #6c757d;
         }
     </style>
 </head>

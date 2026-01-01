@@ -1,3 +1,7 @@
+<!-- {{-- 
+    Component: Auth Session Status
+    Description: Displays session status messages (e.g. "Password Reset Link Sent").
+--}} -->
 @props(['status'])
 
 @if ($status)

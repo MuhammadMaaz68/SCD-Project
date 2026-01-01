@@ -4,10 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+/**
+ * Class WishlistController
+ *
+ * This controller handles the user's wishlist functionality.
+ * It allows adding and removing books from the wishlist.
+ */
 class WishlistController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display the user's wishlist.
+     *
+     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -15,6 +23,12 @@ class WishlistController extends Controller
         return view('wishlist.index', compact('wishlistItems'));
     }
 
+    /**
+     * Add a book to the wishlist.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -29,6 +43,12 @@ class WishlistController extends Controller
         return redirect()->back()->with('success', 'Book added to wishlist!');
     }
 
+    /**
+     * Remove a book from the wishlist.
+     *
+     * @param  string  $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy(string $id)
     {
         $item = \App\Models\Wishlist::where('user_id', auth()->id())->where('id', $id)->firstOrFail();

@@ -8,15 +8,31 @@ use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Str;
 
+/**
+ * Class GoogleController
+ *
+ * This controller manages authentication via Google OAuth.
+ */
 class GoogleController extends Controller
 {
-    // 1) Redirect user to Google
+    /**
+     * Redirect the user to the Google authentication page.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function redirectToGoogle()
     {
         return Socialite::driver('google')->redirect();
     }
 
-    // 2) Handle callback from Google
+    /**
+     * Handle the callback from Google after authentication.
+     *
+     * Creates a new user if one doesn't exist, converts the social user to a model,
+     * and logs them in.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function handleGoogleCallback()
     {
         try {

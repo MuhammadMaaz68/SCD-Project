@@ -5,16 +5,32 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Book;
 
+/**
+ * Class CartController
+ *
+ * This controller manages the session-based shopping cart.
+ * It allows users to add books, remove them, and proceed to checkout (borrow request).
+ */
 class CartController extends Controller
 {
-    // Display Cart
+    /**
+     * Display the current contents of the cart.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $cart = session()->get('cart', []);
         return view('cart.index', compact('cart'));
     }
 
-    // Add item to cart
+    /**
+     * Add a book to the cart.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function addToCart(Request $request, $id)
     {
         $book = Book::findOrFail($id);
@@ -37,7 +53,12 @@ class CartController extends Controller
         return redirect()->back()->with('success', 'Book added to cart successfully!');
     }
 
-    // Remove item from cart
+    /**
+     * Remove a book from the cart.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function remove(Request $request)
     {
         if($request->id) {
@@ -49,7 +70,14 @@ class CartController extends Controller
             return redirect()->back()->with('success', 'Book removed from cart successfully!');
         }
     }
-    // Handle Bulk Borrow Request
+
+    /**
+     * Handle the checkout process (Bulk Borrow Request).
+     *
+     * Creates a borrow record for each item in the cart and then clears the cart.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function checkout()
     {
         $cart = session()->get('cart');

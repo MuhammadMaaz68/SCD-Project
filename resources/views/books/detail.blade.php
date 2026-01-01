@@ -1,3 +1,11 @@
+<!-- {{-- 
+    View: Book Detail
+    Description: Displays detailed information about a specific book.
+    Features:
+    - Book cover, title, description
+    - Action buttons (Add to Cart, Borrow)
+    - Reviews section
+--}} -->
 @extends('layouts.app')
 
 @section('content')
@@ -31,9 +39,13 @@
             </button>
         </form>
 
-        <a href="{{ route('checkout') }}?books={{ $book->id }}" class="btn btn-outline-warning">
-          <i class="bi bi-bag-plus"></i> Borrow
-        </a>
+        <form action="{{ route('borrows.store') }}" method="POST" class="d-inline">
+            @csrf
+            <input type="hidden" name="book_id" value="{{ $book->id }}">
+            <button type="submit" class="btn btn-outline-warning">
+                <i class="bi bi-bag-plus"></i> Borrow
+            </button>
+        </form>
       </div>
 
       <!-- Review Section -->

@@ -1,3 +1,7 @@
+<!-- {{-- 
+    Component: Input Error
+    Description: Displays validation error messages.
+--}} -->
 @props(['messages'])
 
 @if ($messages)

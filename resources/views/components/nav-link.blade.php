@@ -1,3 +1,7 @@
+<!-- {{-- 
+    Component: Nav Link
+    Description: Navigation link with active state styling.
+--}} -->
 @props(['active'])
 
 @php

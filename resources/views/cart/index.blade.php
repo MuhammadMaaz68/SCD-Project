@@ -1,3 +1,11 @@
+<!-- {{-- 
+    View: Shopping Cart
+    Description: Displays selected books for borrowing.
+    Features:
+    - List of items with quantity
+    - Remove item functionality
+    - Checkout (Request Borrow) button
+--}} -->
 @extends('layouts.app')
 
 @section('content')

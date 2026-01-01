@@ -1,3 +1,11 @@
+<!-- {{-- 
+    View: Books Catalog
+    Description: Lists all available books with options to filter, add to cart, or borrow.
+    Features:
+    - Grid layout for books
+    - Bulk actions (Borrow/Wishlist)
+    - Pagination
+--}} -->
 @extends('layouts.app')
 
 @section('content')

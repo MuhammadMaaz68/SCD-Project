@@ -8,10 +8,18 @@ use App\Http\Requests\StoreBookRequest;
 use App\Http\Requests\UpdateBookRequest;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * Class BookController
+ *
+ * This controller manages the CRUD operations for books in the admin panel.
+ * It handles listing, creating, distinct, updating, and deleting books.
+ */
 class BookController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the books.
+     * 
+     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -21,7 +29,9 @@ class BookController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new book.
+     * 
+     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -30,12 +40,16 @@ class BookController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created book in storage.
+     *
+     * @param  \App\Http\Requests\StoreBookRequest  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(StoreBookRequest $request)
     {
         $data = $request->validated();
 
+        // Handle cover image upload
         if ($request->hasFile('cover_image')) {
             $path = $request->file('cover_image')->store('books', 'public');
             $data['cover_image'] = $path;
@@ -47,7 +61,10 @@ class BookController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified book.
+     *
+     * @param  \App\Models\Book  $book
+     * @return \Illuminate\View\View
      */
     public function show(Book $book)
     {
@@ -55,7 +72,10 @@ class BookController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the specified book.
+     *
+     * @param  \App\Models\Book  $book
+     * @return \Illuminate\View\View
      */
     public function edit(Book $book)
     {
@@ -64,14 +84,19 @@ class BookController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified book in storage.
+     *
+     * @param  \App\Http\Requests\UpdateBookRequest  $request
+     * @param  \App\Models\Book  $book
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(UpdateBookRequest $request, Book $book)
     {
         $data = $request->validated();
 
+        // Handle cover image update
         if ($request->hasFile('cover_image')) {
-            // Delete old image
+            // Delete old image if exists
             if ($book->cover_image) {
                 Storage::disk('public')->delete($book->cover_image);
             }
@@ -88,10 +113,14 @@ class BookController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified book from storage.
+     *
+     * @param  \App\Models\Book  $book
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Book $book)
     {
+        // Delete the cover image file
         if ($book->cover_image) {
             Storage::disk('public')->delete($book->cover_image);
         }

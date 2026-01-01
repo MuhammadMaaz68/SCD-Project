@@ -1,3 +1,9 @@
+<!--{{-- 
+    View: Categories List
+    Description: Lists all book categories.
+    Features:
+    - Edit and Delete category actions
+--}} -->
 @extends('layouts.app')
 
 @section('content')

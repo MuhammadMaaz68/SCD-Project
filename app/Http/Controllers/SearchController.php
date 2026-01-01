@@ -5,8 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Book;
 
+/**
+ * Class SearchController
+ *
+ * This controller handles AJAX search requests.
+ * It searches for books by title or category and returns JSON results.
+ */
 class SearchController extends Controller
 {
+    /**
+     * Perform a search query and return results as JSON.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function search(Request $request)
     {
         $query = $request->input('query');
@@ -18,6 +30,7 @@ class SearchController extends Controller
             ]);
         }
 
+        // Search in title or related category name
         $books = Book::with('category')
                     ->where('title', 'LIKE', "%{$query}%")
                     ->orWhereHas('category', function($q) use ($query) {
@@ -33,6 +46,7 @@ class SearchController extends Controller
             ]);
         }
 
+        // Map results to a simplified format for frontend
         $results = $books->map(function ($book) {
             return [
                 'id' => $book->id,

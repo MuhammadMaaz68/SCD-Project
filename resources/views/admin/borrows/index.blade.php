@@ -1,3 +1,10 @@
+<!-- {{-- 
+    View: Borrow Management
+    Description: Manages borrow requests and records.
+    Features:
+    - Filter by status (Pending, Active, Returned, Rejected)
+    - Actions to Approve, Reject, or Mark Returned
+--}} -->
 @extends('layouts.app')
 
 @section('content')

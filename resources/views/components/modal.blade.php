@@ -1,3 +1,7 @@
+<!-- {{-- 
+    Component: Modal
+    Description: General purpose modal dialog.
+--}} -->
 @props([
     'name',
     'show' => false,

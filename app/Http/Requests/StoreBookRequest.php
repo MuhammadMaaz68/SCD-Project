@@ -32,3 +32,4 @@ class StoreBookRequest extends FormRequest
         ];
     }
 }
+

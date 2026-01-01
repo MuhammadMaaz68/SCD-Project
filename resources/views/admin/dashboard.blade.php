@@ -1,3 +1,10 @@
+<!-- {{-- 
+    View: Admin Dashboard
+    Description: The administrative control panel.
+    Display:
+    - Key statistics (Total Books, Users, etc.)
+    - Navigation to admin functions
+--}} -->
 @extends('layouts.app')
 
 @section('content')

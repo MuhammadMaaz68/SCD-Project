@@ -1,3 +1,11 @@
+<!-- {{-- 
+    View: Profile Settings
+    Description: Manages user account settings.
+    Includes:
+    - Profile information update form
+    - Password update form
+    - Account deletion form
+--}} -->
 @extends('layouts.app')
 
 @section('content')

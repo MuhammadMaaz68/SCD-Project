@@ -1,4 +1,8 @@
-    <header>
+<!-- {{-- 
+    Partial: Delete Account
+    Description: Form to permanently delete user account.
+--}} -->
+<header>
         <h2 class="h4 fw-bold text-dark">
             {{ __('Delete Account') }}
         </h2>

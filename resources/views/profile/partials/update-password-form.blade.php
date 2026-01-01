@@ -1,4 +1,8 @@
-    <header>
+<!-- {{-- 
+    Partial: Update Password
+    Description: Form to update user password.
+--}} -->
+<header>
         <h2 class="h4 fw-bold text-dark">
             {{ __('Update Password') }}
         </h2>
@@ -14,13 +18,23 @@
 
         <div class="mb-3">
             <x-input-label for="update_password_current_password" :value="__('Current Password')" />
-            <x-text-input id="update_password_current_password" name="current_password" type="password" class="mt-1" autocomplete="current-password" />
+            <div class="input-group">
+                <x-text-input id="update_password_current_password" name="current_password" type="password" class="form-control" autocomplete="current-password" />
+                <button class="btn btn-outline-secondary" type="button" id="toggleCurrentPassword">
+                    <i class="bi bi-eye"></i>
+                </button>
+            </div>
             <x-input-error :messages="$errors->updatePassword->get('current_password')" class="mt-2" />
         </div>
 
         <div class="mb-3">
             <x-input-label for="update_password_password" :value="__('New Password')" />
-            <x-text-input id="update_password_password" name="password" type="password" class="mt-1" autocomplete="new-password" />
+            <div class="input-group">
+                <x-text-input id="update_password_password" name="password" type="password" class="form-control" autocomplete="new-password" />
+                <button class="btn btn-outline-secondary" type="button" id="toggleNewPassword">
+                    <i class="bi bi-eye"></i>
+                </button>
+            </div>
             <x-input-error :messages="$errors->updatePassword->get('password')" class="mt-2" />
         </div>
 
@@ -44,4 +58,27 @@
             @endif
         </div>
     </form>
+    
+    <script>
+        function togglePasswordVisibility(inputId, buttonId) {
+            const passwordInput = document.getElementById(inputId);
+            const button = document.getElementById(buttonId);
+            const icon = button.querySelector('i');
+            
+            button.addEventListener('click', function () {
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    icon.classList.remove('bi-eye');
+                    icon.classList.add('bi-eye-slash');
+                } else {
+                    passwordInput.type = 'password';
+                    icon.classList.remove('bi-eye-slash');
+                    icon.classList.add('bi-eye');
+                }
+            });
+        }
+
+        togglePasswordVisibility('update_password_current_password', 'toggleCurrentPassword');
+        togglePasswordVisibility('update_password_password', 'toggleNewPassword');
+    </script>
 </section>

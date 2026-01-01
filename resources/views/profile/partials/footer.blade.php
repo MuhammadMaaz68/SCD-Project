@@ -1,3 +1,7 @@
+{{-- 
+    Partial: Footer
+    Description: Global footer section.
+--}}
 <footer class="mt-5">
     <div class="container text-center">
         <p class="mb-2">© 2025 <strong>BookVerse</strong>. All rights reserved.</p>

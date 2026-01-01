@@ -1,3 +1,10 @@
+<!-- {{-- 
+    Layout: Guest Layout
+    Description: The layout wrapper for guest views (Login, Register).
+    Includes:
+    - Centered card design
+    - Application logo highlighting
+--}} -->
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>

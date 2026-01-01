@@ -7,8 +7,20 @@ use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * Class ReviewController
+ *
+ * This controller handles the submission of book reviews.
+ */
 class ReviewController extends Controller
 {
+    /**
+     * Store a newly created review in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Book  $book
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request, Book $book)
     {
         $request->validate([
@@ -16,9 +28,7 @@ class ReviewController extends Controller
             'comment' => 'required|string|max:1000',
         ]);
 
-        // Optional: Check if user already reviewed? 
-        // For now, assuming multiple reviews are allowed or handled loosely.
-
+        // Create the review linked to the user and book
         $book->reviews()->create([
             'user_id' => Auth::id(),
             'rating' => $request->rating,

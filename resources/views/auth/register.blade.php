@@ -1,3 +1,10 @@
+<!-- {{-- 
+    View: Register Page
+    Description: Registration form for new users.
+    Features:
+    - Name, Email, Password fields
+    - Password visibility toggle
+--}} -->
 <x-guest-layout>
     <form method="POST" action="{{ route('register') }}">
         @csrf
@@ -20,10 +27,32 @@
         <div class="mb-3">
             <x-input-label for="password" :value="__('Password')" />
 
-            <x-text-input id="password" class="mt-1"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
+            <div class="input-group">
+                <x-text-input id="password" class="form-control"
+                                type="password"
+                                name="password"
+                                required autocomplete="new-password" />
+                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                    <i class="bi bi-eye"></i>
+                </button>
+            </div>
+
+            <script>
+                document.getElementById('togglePassword').addEventListener('click', function (e) {
+                    const passwordInput = document.getElementById('password');
+                    const icon = this.querySelector('i');
+                    
+                    if (passwordInput.type === 'password') {
+                        passwordInput.type = 'text';
+                        icon.classList.remove('bi-eye');
+                        icon.classList.add('bi-eye-slash');
+                    } else {
+                        passwordInput.type = 'password';
+                        icon.classList.remove('bi-eye-slash');
+                        icon.classList.add('bi-eye');
+                    }
+                });
+            </script>
 
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>

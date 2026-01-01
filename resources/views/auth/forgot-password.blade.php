@@ -1,3 +1,7 @@
+<!-- {{-- 
+    View: Forgot Password
+    Description: Form to request a password reset link.
+--}} -->
 <x-guest-layout>
     <div class="mb-4 text-muted small">
         {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}

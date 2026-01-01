@@ -55,8 +55,13 @@ Route::post('/borrows/{id}/return', [BorrowController::class, 'returnBook'])->mi
 Route::post('/books/{book}/reviews', [App\Http\Controllers\ReviewController::class, 'store'])->middleware(['auth'])->name('reviews.store');
 Route::resource('wishlist', \App\Http\Controllers\WishlistController::class)->middleware(['auth']);
 
-// ==== Profile ====
-Route::middleware('auth')->group(function () {
+// ==== E-Commerce Flows ====
+Route::middleware(['auth'])->group(function () {
+    Route::get('/shop', function() { return view('products.index'); })->name('shop.index');
+    Route::get('/my-orders', [App\Http\Controllers\Api\OrderController::class, 'indexWeb'])->name('orders.index');
+    Route::get('/my-orders/{id}', [App\Http\Controllers\Api\OrderController::class, 'showWeb'])->name('orders.show');
+    
+    // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

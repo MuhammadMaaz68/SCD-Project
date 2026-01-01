@@ -1,3 +1,8 @@
+<!-- {{-- 
+    View: Checkout Page
+    Description: Handles the final steps of borrowing books.
+    Note: Contains custom JS logic for frontend-based interaction demo or specific requirements.
+--}} -->
 @extends('layouts.app')
 
 @section('content')
@@ -104,7 +109,7 @@
   <div id="noBooksSelected" class="alert alert-warning text-center d-none mt-4">
     No books selected for borrowing.
     <div class="mt-3">
-      <a href="{{ route('books') }}" class="btn btn-outline-light">Back to Books</a>
+      <a href="{{ route('books.list') }}" class="btn btn-outline-light">Back to Books</a>
     </div>
   </div>
 
@@ -135,7 +140,7 @@
         <button type="submit" class="btn btn-success px-4 py-2">
           <i class="bi bi-check-circle"></i> Confirm Borrow Request
         </button>
-        <a href="{{ route('books') }}" class="btn btn-outline-secondary ms-2">Cancel</a>
+        <a href="{{ route('books.list') }}" class="btn btn-outline-secondary ms-2">Cancel</a>
       </div>
     </form>
   </div>
@@ -145,7 +150,7 @@
     <h4 class="mb-4">📘 Borrow Receipt</h4>
     <div id="receiptDetails"></div>
     <div class="text-center mt-4">
-      <a href="{{ route('books') }}" class="btn btn-success px-4">Back to Books</a>
+      <a href="{{ route('books.list') }}" class="btn btn-success px-4">Back to Books</a>
     </div>
   </div>
 </div>

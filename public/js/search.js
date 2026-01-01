@@ -1,80 +1,56 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const searchInput = document.getElementById('search-input');
-    const searchResults = document.getElementById('search-results');
+    const resultsBox = document.getElementById('search-results');
 
-    if (searchInput) {
-        searchInput.addEventListener('keyup', function() {
+    if (searchInput && resultsBox) {
+        searchInput.addEventListener('keyup', function () {
             const query = this.value;
 
-            if (query.length < 1) {
-                searchResults.innerHTML = '';
-                searchResults.style.display = 'none';
-                return;
+            if (query.length > 2) {
+                fetch(`/api/search?query=${encodeURIComponent(query)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        resultsBox.innerHTML = '';
+                        if (data.results.length > 0) {
+                            resultsBox.style.display = 'block';
+                            data.results.forEach(item => {
+                                const link = document.createElement('a');
+                                link.href = `/products/${item.id}`; // Assuming we have product detail page or use modal
+                                // Since we don't have a dedicated public product detail page mapped in web routes yet apart from Shop,
+                                // let's stick to showing it or just linking to shop.
+                                // Actually, I haven't made a specific route for /products/{id} WEB view.
+                                // I'll link to # for now or implement a quick view in Shop.
+                                // Let's link to the 'books.detail' if it was a book, but here it is a Product.
+                                link.href = '#';
+                                link.classList.add('dropdown-item', 'p-2', 'border-bottom');
+                                link.innerHTML = `
+                                    <div class="d-flex align-items-center">
+                                        <img src="${item.image ? '/storage/' + item.image : 'https://placehold.co/40'}" style="width: 40px; height: 40px; object-fit: cover;" class="me-2 rounded">
+                                        <div>
+                                            <div class="fw-bold">${item.name}</div>
+                                            <small class="text-muted">$${item.price}</small>
+                                        </div>
+                                    </div>
+                                `;
+                                resultsBox.appendChild(link);
+                            });
+                        } else {
+                            resultsBox.style.display = 'block';
+                            resultsBox.innerHTML = '<span class="dropdown-item text-muted">No results found</span>';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching search results:', error);
+                    });
+            } else {
+                resultsBox.style.display = 'none';
             }
-
-            fetch(`/search?query=${encodeURIComponent(query)}`)
-                .then(response => response.json())
-                .then(data => {
-                    searchResults.innerHTML = '';
-                    
-                    if (data.status === 'success' && data.results.length > 0) {
-                        searchResults.style.display = 'block';
-                        
-                        data.results.forEach(item => {
-                            const resultItem = document.createElement('a');
-                            resultItem.href = item.url;
-                            resultItem.classList.add('dropdown-item', 'd-flex', 'align-items-center', 'p-2', 'border-bottom');
-                            
-                            // Image
-                            if (item.image) {
-                                const img = document.createElement('img');
-                                img.src = item.image;
-                                img.alt = item.name;
-                                img.style.width = '40px';
-                                img.style.height = '50px';
-                                img.style.objectFit = 'cover';
-                                img.classList.add('me-3', 'rounded');
-                                resultItem.appendChild(img);
-                            } else {
-                                const placeholder = document.createElement('div');
-                                placeholder.classList.add('bg-secondary', 'me-3', 'rounded', 'd-flex', 'align-items-center', 'justify-content-center');
-                                placeholder.style.width = '40px';
-                                placeholder.style.height = '50px';
-                                placeholder.innerHTML = '<span class="text-white small">N/A</span>';
-                                resultItem.appendChild(placeholder);
-                            }
-
-                            // Text Content
-                            const textDiv = document.createElement('div');
-                            const title = document.createElement('div');
-                            title.classList.add('fw-bold', 'text-dark');
-                            title.textContent = item.name;
-                            
-                            const category = document.createElement('div');
-                            category.classList.add('small', 'text-muted');
-                            category.textContent = item.category;
-
-                            textDiv.appendChild(title);
-                            textDiv.appendChild(category);
-                            resultItem.appendChild(textDiv);
-
-                            searchResults.appendChild(resultItem);
-                        });
-                    } else {
-                        searchResults.innerHTML = '<div class="p-3 text-muted text-center">No results found</div>';
-                        searchResults.style.display = 'block';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    searchResults.style.display = 'none';
-                });
         });
 
-        // Hide results when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
-                searchResults.style.display = 'none';
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function (e) {
+            if (!searchInput.contains(e.target) && !resultsBox.contains(e.target)) {
+                resultsBox.style.display = 'none';
             }
         });
     }

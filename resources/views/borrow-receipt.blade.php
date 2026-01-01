@@ -1,3 +1,8 @@
+<!-- {{-- 
+    View: Borrow Receipt demonstration
+    Description: Displays a receipt for borrowed books.
+    Note: Usage seems to be frontend-demo specific or legacy.
+--}} -->
 @extends('layouts.app')
 
 @section('content')

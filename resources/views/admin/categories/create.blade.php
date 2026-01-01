@@ -1,3 +1,7 @@
+<!-- {{-- 
+    View: Create Category
+    Description: Form to add a new category.
+--}} -->
 @extends('layouts.app')
 
 @section('content')

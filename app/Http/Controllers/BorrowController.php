@@ -4,10 +4,19 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+/**
+ * Class BorrowController
+ *
+ * This controller handles the lifecycle of a borrow request.
+ * It allows users to request books, admins to update status, and users to return books.
+ */
 class BorrowController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Store a new borrow request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(\Illuminate\Http\Request $request)
     {
@@ -27,19 +36,32 @@ class BorrowController extends Controller
         return redirect()->back()->with('success', 'Borrow request submitted successfully!');
     }
 
+    /**
+     * Update the status of a borrow request (Admin function).
+     *
+     * Handles logic for approving (decreasing stock), returning (increasing stock),
+     * and rejecting requests.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function updateStatus(\Illuminate\Http\Request $request, $id)
     {
         $borrow = \App\Models\Borrow::with('book')->findOrFail($id);
         $previousStatus = $borrow->status;
         
         if ($request->status === 'returned') {
+            // Mark as returned
             $borrow->update(['status' => 'returned', 'returned_at' => now()]);
             
+            // Increment stock if it was previously approved (meaning it was out)
             if ($previousStatus === 'approved') {
                 $borrow->book->increment('quantity');
             }
         } else {
             if ($request->status === 'approved' && $previousStatus !== 'approved') {
+                // Check stock before approving
                 if ($borrow->book->quantity < 1) {
                     return redirect()->back()->with('error', 'Cannot approve request. Book is out of stock.');
                 }
@@ -61,6 +83,12 @@ class BorrowController extends Controller
         return redirect()->back()->with('success', $message);
     }
 
+    /**
+     * Allow a user to return a book they borrowed.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function returnBook($id)
     {
         $borrow = \App\Models\Borrow::where('user_id', auth()->id())->where('id', $id)->firstOrFail();

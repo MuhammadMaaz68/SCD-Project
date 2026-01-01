@@ -1,3 +1,7 @@
+<!-- {{-- 
+    View: User Dashboard Mockup
+    Description: Static mockup of user dashboard. Not currently used in main flow.
+--}} -->
 @extends('layouts.app')
 
 @section('title', 'User Dashboard | BookVerse')

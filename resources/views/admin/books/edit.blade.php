@@ -1,3 +1,10 @@
+<!-- {{-- 
+    View: Edit Book
+    Description: Form to update an existing book.
+    Features:
+    - Pre-filled fields with book data
+    - Image update capability
+--}} -->
 @extends('layouts.app')
 
 @section('content')

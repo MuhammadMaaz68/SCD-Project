@@ -1,3 +1,10 @@
+<!-- {{-- 
+    View: Admin Users List
+    Description: Lists all registered users.
+    Features:
+    - Display user details (Name, Email, Role, etc.)
+    - Pagination
+--}} -->
 @extends('layouts.app')
 
 @section('content')

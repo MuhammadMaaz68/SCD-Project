@@ -1,3 +1,10 @@
+{{-- 
+    View: Wishlist
+    Description: Displays user's saved books.
+    Features:
+    - Grid view of wishlisted items
+    - Remove from wishlist functionality
+--}}
 @extends('layouts.app')
 
 @section('content')

@@ -1,3 +1,10 @@
+<!-- {{-- 
+    View: Admin Books List
+    Description: Manges books and categories.
+    Features:
+    - List of books with edit/delete actions
+    - List of categories with edit/delete actions
+--}} -->
 @extends('layouts.app')
 
 @section('content')

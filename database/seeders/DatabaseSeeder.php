@@ -3,8 +3,13 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Category;
+use App\Models\Product;
+use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\Book;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash; // Ensure Hash is imported
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,83 +18,64 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Create Admin User
-        $user = User::create([
-            'name' => 'Admin User',
-            'email' => 'admin@bookverse.com',
-            'password' => bcrypt('password'), // password
-            'email_verified_at' => now(),
-        ]);
+        // 1. Create specific Users
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@example.com'],
+            [
+                'name' => 'Admin User',
+                'password' => Hash::make('password'),
+                'role' => 'admin',
+                'email_verified_at' => now(),
+            ]
+        );
+
+        $testUser = User::firstOrCreate(
+            ['email' => 'test@example.com'],
+            [
+                'name' => 'Test User',
+                'password' => Hash::make('password'),
+                'role' => 'user',
+                'email_verified_at' => now(),
+            ]
+        );
+
+        // Create some random users
+        User::factory(5)->create();
 
         // 2. Create Categories
-        $categories = [
-            'Fiction' => 'Imaginary stories and narratives.',
-            'Science' => 'Books about the natural world and technology.',
-            'History' => 'Accounts of past events and periods.',
-            'Technology' => 'Computers, programming, and the future.',
-            'Philosophy' => 'Fundamental questions about existence and knowledge.'
-        ];
+        $categories = Category::factory(10)->create();
 
-        $categoryIds = [];
-        foreach ($categories as $name => $desc) {
-            $cat = \App\Models\Category::create([
-                'name' => $name,
-                'description' => $desc
-            ]);
-            $categoryIds[$name] = $cat->id;
-        }
+        // 3. Create Products assigned to those categories
+        $products = Product::factory(50)->recycle($categories)->create();
 
-        // 3. Create Books
-        $books = [
-            [
-                'title' => 'The Silent Library',
-                'author' => 'John Cross',
-                'description' => 'A mysterious tale of forbidden knowledge.',
-                'category_id' => $categoryIds['Fiction'],
-                'quantity' => 5,
-                'published_year' => 2020,
-                'cover_image' => null // Using null for now, or could map to existing dummy images
-            ],
-            [
-                'title' => 'Cosmic Horizons',
-                'author' => 'Sarah Vae',
-                'description' => 'Exploring the edges of our universe.',
-                'category_id' => $categoryIds['Science'],
-                'quantity' => 3,
-                'published_year' => 2022,
-                'cover_image' => null
-            ],
-            [
-                'title' => 'Ancient Empires',
-                'author' => 'Marcus Aurelius (Fictional)',
-                'description' => 'The rise and fall of great civilizations.',
-                'category_id' => $categoryIds['History'],
-                'quantity' => 8,
-                'published_year' => 2018,
-                'cover_image' => null
-            ],
-            [
-                'title' => 'Coding Future',
-                'author' => 'Dev Guru',
-                'description' => 'A guide to modern software architecture.',
-                'category_id' => $categoryIds['Technology'],
-                'quantity' => 10,
-                'published_year' => 2024,
-                'cover_image' => null
-            ],
-            [
-                'title' => 'Mind and Matter',
-                'author' => 'Elena Wise',
-                'description' => 'Bridging the gap between physics and consciousness.',
-                'category_id' => $categoryIds['Philosophy'],
-                'quantity' => 4,
-                'published_year' => 2021,
-                'cover_image' => null
-            ]
-        ];
+        // 4. Create Books (Legacy) assigned to categories
+        Book::factory(20)->recycle($categories)->create();
 
-        foreach ($books as $book) {
-            \App\Models\Book::create($book);
+        // 5. Create Orders for Test User and Random Users
+        $users = User::all();
+
+        foreach ($users as $user) {
+            // Create 1-3 orders for each user
+            Order::factory(rand(1, 3))->create([
+                'user_id' => $user->id,
+            ])->each(function ($order) use ($products) {
+                // Attach random products to each order
+                $orderProducts = $products->random(rand(2, 5));
+                foreach ($orderProducts as $product) {
+                    OrderItem::factory()->create([
+                        'order_id' => $order->id,
+                        'product_id' => $product->id,
+                        'quantity' => rand(1, 3),
+                        'price' => $product->price, // Use actual product price
+                    ]);
+                }
+                
+                // Recalculate total price based on created items
+                $total = $order->items->sum(function($item) {
+                    return $item->price * $item->quantity;
+                });
+                $order->update(['total_price' => $total]);
+            });
         }
     }
 }

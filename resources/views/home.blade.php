@@ -1,3 +1,11 @@
+<!-- {{-- 
+    View: Home Page
+    Description: The public landing page.
+    Display:
+    - Hero section
+    - Featured books
+    - Brand value proposition
+--}} -->
 @extends('layouts.app')
 
 @section('content')

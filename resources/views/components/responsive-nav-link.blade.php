@@ -1,3 +1,7 @@
+<!-- {{-- 
+    Component: Responsive Nav Link
+    Description: Navigation link for mobile menus.
+--}} -->
 @props(['active'])
 
 @php

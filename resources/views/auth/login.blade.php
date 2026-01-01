@@ -1,3 +1,12 @@
+<!-- {{-- 
+    View: Login Page
+    Description: Authenticates users into the system.
+    Features:
+    - Email/Password login
+    - Password visibility toggle
+    - Google Social Login
+    - Recaptcha integration
+--}} -->
 <x-guest-layout>
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
@@ -16,10 +25,32 @@
         <div class="mb-3">
             <x-input-label for="password" :value="__('Password')" />
 
-            <x-text-input id="password" class="mt-1"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
+            <div class="input-group">
+                <x-text-input id="password" class="form-control"
+                                type="password"
+                                name="password"
+                                required autocomplete="current-password" />
+                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                    <i class="bi bi-eye"></i>
+                </button>
+            </div>
+
+            <script>
+                document.getElementById('togglePassword').addEventListener('click', function (e) {
+                    const passwordInput = document.getElementById('password');
+                    const icon = this.querySelector('i');
+                    
+                    if (passwordInput.type === 'password') {
+                        passwordInput.type = 'text';
+                        icon.classList.remove('bi-eye');
+                        icon.classList.add('bi-eye-slash');
+                    } else {
+                        passwordInput.type = 'password';
+                        icon.classList.remove('bi-eye-slash');
+                        icon.classList.add('bi-eye');
+                    }
+                });
+            </script>
 
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>

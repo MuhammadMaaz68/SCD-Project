@@ -1,4 +1,8 @@
-    <header>
+<!-- {{-- 
+    Partial: Update Profile Information
+    Description: Form to update user name and email.
+--}} -->
+<header>
         <h2 class="h4 fw-bold text-dark">
             {{ __('Profile Information') }}
         </h2>

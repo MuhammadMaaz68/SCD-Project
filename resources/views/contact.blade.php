@@ -1,3 +1,7 @@
+<!-- {{-- 
+    View: Contact Us
+    Description: Displays contact form and information.
+--}} -->
 @extends('layouts.app')
 
 @section('content')

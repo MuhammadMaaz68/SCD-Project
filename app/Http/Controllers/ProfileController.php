@@ -9,6 +9,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
+/**
+ * Class ProfileController
+ *
+ * This controller handles user profile settings.
+ * It manages viewing statistics, updating profile info, and account deletion.
+ */
 class ProfileController extends Controller
 {
     /**

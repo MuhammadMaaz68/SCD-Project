@@ -1,3 +1,10 @@
+<!-- {{-- 
+    View: Create Book
+    Description: Form to add a new book.
+    Features:
+    - Input fields for title, author, category, etc.
+    - Image upload with preview
+--}} -->
 @extends('layouts.app')
 
 @section('content')

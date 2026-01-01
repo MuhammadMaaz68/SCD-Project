@@ -1,3 +1,11 @@
+<!-- {{-- 
+    View: User Dashboard
+    Description: The landing page for logged-in users.
+    Display:
+    - Sidebar navigation
+    - Active borrowed books
+    - Borrowing history
+--}} -->
 @extends('layouts.app')
 
 @section('content')
